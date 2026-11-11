@@ -1,0 +1,34 @@
+services:
+  # 1. SSH Honeypot (Cowrie)
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: decoy_ssh
+    restart: always
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./logs/cowrie:/cowrie/cowrie-git/var/log/cowrie
+
+  # 2. Fake HTTP Admin Decoy
+  http_decoy:
+    build:
+      context: ./deployer/http_decoy
+    container_name: decoy_http
+    restart: always
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./logs/http:/logs/http
+
+  # 3. Fake MySQL Decoy
+  mysql_decoy:
+    image: mysql:5.7
+    container_name: decoy_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: fake_password_123
+    ports:
+      - "3307:3306"
+    command: --general-log=1 --general-log-file=/var/log/mysql/general.log
+    volumes:
+      - ./logs/mysql:/var/log/mysql

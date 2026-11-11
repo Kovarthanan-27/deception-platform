@@ -1,0 +1,6 @@
+telemetry/forensic_evidence/
+logs/
+*.tar
+*.pdf
+__pycache__/
+venv/
